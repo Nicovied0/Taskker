@@ -12,8 +12,9 @@ const TaskSchema = new mongoose.Schema({
   meetingUrl: {
     type: String,
   },
-  organization: {
-    type: String,
+  completed: {
+    type: Boolean,
+    default:false
   },
   hour: {
     type: String,
@@ -29,4 +30,4 @@ const TaskSchema = new mongoose.Schema({
 
 const Task = mongoose.model("Task", TaskSchema);
 
-module.exports = User;
+module.exports = Task;
