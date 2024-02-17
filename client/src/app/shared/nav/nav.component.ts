@@ -1,19 +1,33 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ProfileService } from 'src/app/core/services/Profile.service';
+
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent {
-  constructor(private router: Router) {}
+  constructor(private profileService: ProfileService,private router: Router) {}
 
+  data: any
+  logged : boolean = false
   active = false;
   enOn = false;
   esOn = true;
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getProfile()
+  }
 
+  
+  getProfile() {
+    this.data = this.profileService.getUserDataFromLocalStorage()
+    console.log(this.data)
+    if(this.data.name){
+      this.logged = true
+    }
+  }
   goHome() {
     this.router.navigate(['']);
     this.noShowBurger();

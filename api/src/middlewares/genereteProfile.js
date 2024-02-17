@@ -13,7 +13,7 @@ async function genereteProfile(req, res) {
       name: lastProfileData.name,
       email: lastProfileData.email,
       userIdRegister: lastProfileData._id,
-      organization: "TuOrganizacion",
+      organization: "",
     });
     await newUser.save();
   } catch (error) {

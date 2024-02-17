@@ -4,6 +4,7 @@ import { NavComponent } from './nav/nav.component';
 import { FooterComponent } from './footer/footer.component';
 import { LoaderComponent } from './loader/loader.component';
 import { FormsModule } from '@angular/forms';
+import { ProfileService } from '../core/services/Profile.service';
 
 
 
@@ -15,13 +16,16 @@ import { FormsModule } from '@angular/forms';
   ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    
 
   ],
   exports:[
     NavComponent, 
     FooterComponent, 
     LoaderComponent
-  ]
+  ],
+  providers:[ProfileService]
+  
 })
 export class SharedModule { }
