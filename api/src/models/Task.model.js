@@ -14,12 +14,15 @@ const TaskSchema = new mongoose.Schema({
   },
   completed: {
     type: Boolean,
-    default:false
+    default: false,
   },
   hour: {
     type: String,
   },
   day: {
+    type: String,
+  },
+  usercreator: {
     type: String,
   },
   createdAt: {

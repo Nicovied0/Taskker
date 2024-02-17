@@ -75,10 +75,29 @@ async function updateTaskById(req, res) {
   }
 }
 
+async function createTask(req, res) {
+  try {
+    const { title, description, hour, day, usercreator } = req.body;
+    const task = new Task({
+      title,
+      description,
+      hour,
+      day,
+      usercreator,
+    });
+    const newTask = await task.save();
+    res.status(201).json(newTask);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error to create task" });
+  }
+}
+
 module.exports = {
   getAllTask,
   getTasklById,
+  getUserTasks,
   updateTaskById,
   deleteTaskById,
-  getUserTasks,
+  createTask,
 };
