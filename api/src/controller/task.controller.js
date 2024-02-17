@@ -88,18 +88,15 @@ async function createTask(req, res) {
     });
     const newTask = await task.save();
 
-    // Encuentra el usuario al que deseas asociar la tarea (aquí asumiendo que tienes el ID del usuario en req.body.userId)
     const userId = usercreator;
     const user = await User.findById(userId);
 
-    // Asocia la tarea con el usuario
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Si user.tasks es undefined, inicialízalo como un array vacío
     user.tasks = user.tasks || [];
-    user.tasks.push(newTask._id); // Asegúrate de que el campo de tareas en el modelo User sea un array de ObjectIds
+    user.tasks.push(newTask._id);
     await user.save();
 
     res.status(201).json(newTask);
