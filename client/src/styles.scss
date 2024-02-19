@@ -29,6 +29,50 @@ ul {
   outline: 0;
 }
 
+p,
+body,
+td {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+}
+body {
+  padding: 0px;
+  margin: 0px;
+  background-color: #ffffff;
+}
+a {
+  color: #1155a3;
+}
+.space {
+  margin: 10px 0px 10px 0px;
+}
+/* You can add global styles to this file, and also import other style files */
+
+body .calendar_default_event_inner {
+  background: #2e78d6;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 10pt;
+  padding: 5px;
+  opacity: 0.8;
+}
+
+body .month_default_event_inner {
+  background: #2e78d6;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 10pt;
+  padding: 5px;
+  opacity: 0.8;
+}
+.main{
+  padding: 0;
+  margin: 0;
+}
+
 :root {
   --shark-50: #f4f6f7;
   --shark-100: #e3e7ea;
