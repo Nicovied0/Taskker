@@ -312,7 +312,7 @@ export class CalendarComponent implements AfterViewInit {
     if (modal.canceled) {
       return;
     }
-
+    console.log(args.e.data)
     const dp = args.control;
 
     dp.events.update(modal.result);

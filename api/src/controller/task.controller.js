@@ -26,14 +26,17 @@ async function getTasklById(req, res) {
 
 async function getUserTasks(req, res) {
   try {
-    const task = await Task.findById(req.params.id);
-    if (!task) {
-      return res.status(404).json({ error: "task not found" });
+    const userId = req.params.userId;
+    const tasks = await Task.find({ usercreator: userId });
+
+    if (tasks.length === 0) {
+      return res.status(404).json({ error: "No tasks found for the user" });
     }
-    return res.status(200).json(task);
+
+    return res.status(200).json(tasks);
   } catch (error) {
-    console.error("Error fetching task by ID:", error.message);
-    return res.status(500).json({ error: "Error fetching task by ID" });
+    console.error("Error fetching tasks by user ID:", error.message);
+    return res.status(500).json({ error: "Error fetching tasks by user ID" });
   }
 }
 
@@ -53,16 +56,16 @@ async function deleteTaskById(req, res) {
 
 async function updateTaskById(req, res) {
   try {
-    const { title, description, meetingUrl, completed, hour, day } = req.body;
+    const { title, description, meetingUrl, start, end, status } = req.body;
     const updatedTask = await Task.findByIdAndUpdate(
       req.params.id,
       {
         title,
         description,
         meetingUrl,
-        completed,
-        hour,
-        day,
+        start,
+        end,
+        status,
       },
       { new: true }
     );
@@ -78,13 +81,15 @@ async function updateTaskById(req, res) {
 
 async function createTask(req, res) {
   try {
-    const { title, description, hour, day, usercreator } = req.body;
+    const { title, description, meetingUrl, start, end, status,usercreator } = req.body;
     const task = new Task({
       title,
       description,
-      hour,
-      day,
-      usercreator,
+      meetingUrl,
+      start,
+      end,
+      status,
+      usercreator
     });
     const newTask = await task.save();
 

@@ -12,14 +12,13 @@ const TaskSchema = new mongoose.Schema({
   meetingUrl: {
     type: String,
   },
-  completed: {
-    type: Boolean,
-    default: false,
+  start:{
+    type:String,
   },
-  hour: {
-    type: String,
+  end:{
+    type:String
   },
-  day: {
+  status: {
     type: String,
   },
   usercreator: {

@@ -1,6 +1,7 @@
 .container {
     display: flex;
     flex-direction: row;
+    max-width: 100%;
   }
   
   .navigator {
@@ -80,12 +81,15 @@
       flex-wrap: wrap;
     }
     :host ::ng-deep .navigator_default_month {
-      margin: 10px;
+     border: solid 10px rgba(255, 255, 255, 0);
+     background-color: rgba(128, 128, 128, 0.123); 
+      margin:5px
     }
   }
   input[type="checkbox"] {
     vertical-align: middle;
-    position: relative;
+    position: relative; 
+
     bottom: 1px;
   }
   
