@@ -17,6 +17,7 @@ const routes: Routes = [
     path: 'editProfile',
     component: EditprofileviewComponent,
   },
+  
 ];
 
 @NgModule({

@@ -20,6 +20,6 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     ApplicationRoutingModule,
     FormsModule
-  ]
+  ],
 })
-export class ApplicationModule { }
+export class ApplicationModule {}
