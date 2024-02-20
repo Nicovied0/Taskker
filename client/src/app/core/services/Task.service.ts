@@ -39,16 +39,15 @@ export class TaskService {
   deleteTask(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
-  
 
   editStatus(id: string, newStatus: string): Observable<any> {
     const url = `${this.apiUrl}/status/${id}`;
-    const updatedData = { status: newStatus }; 
+    const updatedData = { status: newStatus };
     return this.http.put<any>(url, updatedData);
   }
 
   private adjustEventData(eventData: any): any {
-    console.log(eventData)
+    console.log(eventData);
     return {
       title: eventData.text,
       description: eventData.description,
@@ -56,8 +55,7 @@ export class TaskService {
       start: eventData.start.value.toString(),
       end: eventData.end.value.toString(),
       status: eventData.backColor,
-      usercreator: eventData.usercreator
+      usercreator: eventData.usercreator,
     };
-  
-}
+  }
 }

@@ -80,6 +80,20 @@ async function updateTaskById(req, res) {
   }
 }
 
+async function updateTaskByStatus(req, res) {
+  try {
+    const id = req.params.id;
+    const newStatus = req.body.status;
+    const updatedDocument = await Task.findByIdAndUpdate(id, { status: newStatus }, { new: true });
+
+    res.json(updatedDocument); 
+  } catch (error) {
+    console.error('Error al actualizar el estado:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+}
+
+
 async function createTask(req, res) {
   try {
     const { title, description, meetingUrl, start, end, status, usercreator } =
@@ -118,6 +132,7 @@ module.exports = {
   getTaskById,
   getUserTasks,
   updateTaskById,
+  updateTaskByStatus,
   deleteTaskById,
   createTask,
 };
