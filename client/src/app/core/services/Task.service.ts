@@ -29,6 +29,11 @@ export class TaskService {
     );
   }
 
+  createTask(data:any){
+    console.log(data,"sot data post")
+    // return this.http.post<any>(this.apiUrl, data);
+  }
+
   editTask(eventId: string, updatedEvent: any): Observable<any> {
     const url = this.apiUrl + eventId;
     const adjustedEventData = this.adjustEventData(updatedEvent);
