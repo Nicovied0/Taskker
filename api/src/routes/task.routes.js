@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {
   getAllTask,
-  getTasklById,
+  getTaskById,
   deleteTaskById,
   updateTaskById,
   getUserTasks,
@@ -12,9 +12,9 @@ const {
 
 router.get("/", getAllTask);
 router.get("/user/:id", getUserTasks);
-router.get("/:id", getTasklById);
+router.get("/:id", getTaskById);
 router.put("/:id", updateTaskById);
 router.post("/", createTask);
-router.delete("/", deleteTaskById);
+router.delete("/:id", deleteTaskById);
 
 module.exports = router;

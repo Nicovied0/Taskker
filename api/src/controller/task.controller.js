@@ -11,7 +11,7 @@ async function getAllTask(req, res) {
   }
 }
 
-async function getTasklById(req, res) {
+async function getTaskById(req, res) {
   try {
     const task = await Task.findById(req.params.id);
     if (!task) {
@@ -26,7 +26,7 @@ async function getTasklById(req, res) {
 
 async function getUserTasks(req, res) {
   try {
-    const userId = req.params.userId;
+    const userId = req.params.id;
     const tasks = await Task.find({ usercreator: userId });
 
     if (tasks.length === 0) {
@@ -40,14 +40,15 @@ async function getUserTasks(req, res) {
   }
 }
 
+
 async function deleteTaskById(req, res) {
   try {
     const task = await Task.findById(req.params.id);
     if (!task) {
-      return res.status(404).json({ error: "task not found" });
+      return res.status(404).json({ error: "Task not found" });
     }
-    await task.remove();
-    return res.status(204).end();
+    await task.deleteOne();
+    return res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
     console.error("Error deleting task:", error.message);
     return res.status(500).json({ error: "Error deleting task" });
@@ -81,7 +82,8 @@ async function updateTaskById(req, res) {
 
 async function createTask(req, res) {
   try {
-    const { title, description, meetingUrl, start, end, status,usercreator } = req.body;
+    const { title, description, meetingUrl, start, end, status, usercreator } =
+      req.body;
     const task = new Task({
       title,
       description,
@@ -89,7 +91,7 @@ async function createTask(req, res) {
       start,
       end,
       status,
-      usercreator
+      usercreator,
     });
     const newTask = await task.save();
 
@@ -113,7 +115,7 @@ async function createTask(req, res) {
 
 module.exports = {
   getAllTask,
-  getTasklById,
+  getTaskById,
   getUserTasks,
   updateTaskById,
   deleteTaskById,

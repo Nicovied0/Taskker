@@ -1,4 +1,3 @@
-
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import {
   DayPilot,
@@ -7,11 +6,12 @@ import {
   DayPilotNavigatorComponent,
 } from '@daypilot/daypilot-lite-angular';
 import { DataService } from './data.service';
+import { TaskService } from 'src/app/core/services/Task.service';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss']
+  styleUrls: ['./calendar.component.scss'],
 })
 export class CalendarComponent implements AfterViewInit {
   @ViewChild('day') day!: DayPilotCalendarComponent;
@@ -20,6 +20,13 @@ export class CalendarComponent implements AfterViewInit {
   @ViewChild('navigator') nav!: DayPilotNavigatorComponent;
 
   events: DayPilot.EventData[] = [];
+
+  constructor(private ds: DataService, private taskService: TaskService) {
+    this.viewWeek();
+  }
+  tasks: any[] | undefined;
+
+  ngOnInit(): void {}
 
   form = [
     { name: 'Titulo', id: 'text' },
@@ -49,6 +56,19 @@ export class CalendarComponent implements AfterViewInit {
           const event = args.source;
           const dp = event.calendar;
           dp.events.remove(event);
+          console.log(event);
+
+          this.taskService.deleteTask(event.data.id).subscribe(
+            (response) => {
+              console.log('Tarea eliminada en el servidor:', response);
+            },
+            (error) => {
+              console.error(
+                'Error al eliminar la tarea en el servidor:',
+                error
+              );
+            }
+          );
         },
       },
       {
@@ -56,8 +76,6 @@ export class CalendarComponent implements AfterViewInit {
         onClick: async (args) => {
           const event = args.source;
           const dp = event.calendar;
-          console.log(event);
-          console.log(dp);
           const data = event.data;
 
           const form = [
@@ -93,8 +111,17 @@ export class CalendarComponent implements AfterViewInit {
           event.data.description = modal.result.description;
           event.start = modal.result.start;
           event.end = modal.result.end;
-          event.data.backColor = modal.result.backColor;
+          event.data.backColor = this.getColorForStatus(modal.result.backColor);
 
+          this.taskService.editTask(event.data.id, event.data).subscribe(
+            (response) => {
+              console.log('Evento editado en el servidor:', response);
+            },
+            (error) => {
+              console.error('Error al editar el evento en el servidor:', error);
+            }
+          );
+          event.data.backColor = modal.result.backColor;
           dp.events.update(event);
         },
       },
@@ -194,10 +221,6 @@ export class CalendarComponent implements AfterViewInit {
     onEventClick: this.onEventClick.bind(this),
   };
 
-  constructor(private ds: DataService) {
-    this.viewWeek();
-  }
-
   ngAfterViewInit(): void {
     this.loadEvents();
   }
@@ -255,6 +278,18 @@ export class CalendarComponent implements AfterViewInit {
         toolTip: 'Delete event',
         onClick: async (args: any) => {
           dp.events.remove(args.source);
+
+          this.taskService.deleteTask(args.source.data?.id).subscribe(
+            (response) => {
+              console.log('Tarea eliminada en el servidor:', response);
+            },
+            (error) => {
+              console.error(
+                'Error al eliminar la tarea en el servidor:',
+                error
+              );
+            }
+          );
         },
       },
     ];
@@ -285,6 +320,7 @@ export class CalendarComponent implements AfterViewInit {
     const form = [
       { name: 'Titulo', id: 'text' },
       { name: 'Descripcion', id: 'description' },
+      { name: 'Url de reunion', id: 'meetingUrl' },
       {
         name: 'Comienza',
         id: 'start',
@@ -305,16 +341,47 @@ export class CalendarComponent implements AfterViewInit {
       },
     ];
     const data = args.e.data;
-    console.log(args)
+    console.log(args);
 
     const modal = await DayPilot.Modal.form(form, data);
 
     if (modal.canceled) {
       return;
     }
-    console.log(args.e.data)
-    const dp = args.control;
+    const eventId = data.id;
 
-    dp.events.update(modal.result);
+    const updatedEvent = modal.result;
+    console.log(modal.result, 'soy modal resul');
+
+    this.taskService.editTask(eventId, updatedEvent).subscribe(
+      (response) => {
+        console.log('Evento editado con éxito:', response);
+        args.e.data.text = updatedEvent.text;
+        args.e.data.description = updatedEvent.description;
+        args.e.data.start = updatedEvent.start;
+        args.e.data.end = updatedEvent.end;
+        args.e.data.backColor = this.getColorForStatus(updatedEvent.backColor);
+      },
+      (error) => {
+        console.error('Error al editar el evento:', error);
+      }
+    );
   }
+
+  getColorForStatus = (status: string): string => {
+    switch (status) {
+      case DataService.colors.green:
+        return 'Completa';
+      case DataService.colors.yellow:
+        return 'Alerta';
+      case DataService.colors.red:
+        return 'Cancelada';
+      case DataService.colors.gray:
+        return 'En proceso';
+      case DataService.colors.blue:
+        return 'Agendada';
+      default:
+        return '';
+    }
+  };
 }
