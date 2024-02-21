@@ -8,12 +8,12 @@ import { DayPilot } from '@daypilot/daypilot-lite-angular';
   providedIn: 'root',
 })
 export class TaskService {
-  private apiUrl = environment.backUrl + '/task/';
+  private apiUrl = environment.backUrl + '/task';
 
   constructor(private http: HttpClient) {}
 
   getTasksByUserId(userId: string): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl + 'user/' + userId).pipe(
+    return this.http.get<any[]>(this.apiUrl + '/user/' + userId).pipe(
       map((tasks: any[]) => {
         return tasks.map((task) => ({
           id: task._id,
@@ -33,7 +33,7 @@ export class TaskService {
   }
 
   editTask(eventId: string, updatedEvent: any): Observable<any> {
-    const url = this.apiUrl + eventId;
+    const url = this.apiUrl +"/"+ eventId;
     const adjustedEventData = this.adjustEventData(updatedEvent);
     return this.http.put<any>(url, adjustedEventData);
   }

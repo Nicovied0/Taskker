@@ -116,7 +116,13 @@ export class CalendarComponent implements AfterViewInit {
           event.data.start = modal.result.start.value;
           event.data.end = modal.result.end.value;
           event.data.backColor = this.getColorForStatus(modal.result.backColor);
-          this.taskService.editTask(event.data.id, event.data).subscribe(
+
+          let updatedEvent = modal.result;
+          updatedEvent.backColor = this.getColorForStatus(
+            modal.result.backColor
+          );
+
+          this.taskService.editTask(event.data.id, updatedEvent).subscribe(
             (response) => {
               console.log('Evento editado en el servidor:', response);
             },
@@ -124,7 +130,9 @@ export class CalendarComponent implements AfterViewInit {
               console.error('Error al editar el evento en el servidor:', error);
             }
           );
-          event.data.backColor = modal.result.backColor;
+          event.data.backColor = this.getStatusForColors(
+            modal.result.backColor
+          );
           dp.events.update(event);
         },
       },
