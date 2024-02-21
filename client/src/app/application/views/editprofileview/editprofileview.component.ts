@@ -68,30 +68,32 @@ export class EditprofileviewComponent {
 
   saveChanges() {
     if (this.editedUser.image === '') {
-      this.editedUser.image = this.user.imagen;
+      this.editedUser.image = this.user.image;
     }
 
     this.editProfileService
       .updateProfile(this.user._id, this.editedUser)
       .subscribe((updatedProfile) => {
         if (updatedProfile) {
-          console.log('Perfil actualizado correctamente:', updatedProfile);
-          // Eliminar el dato de imagen antiguo del localStorage
-          localStorage.removeItem('userData');
-          // Actualizar el dato de imagen nuevo en el localStorage
           const updatedUserData =
             this.profileService.getUserDataFromLocalStorage();
-          updatedUserData.imagen = this.editedUser.image;
+          localStorage.removeItem('userData');
+          updatedUserData.image = this.editedUser.image;
+          console.log( this.editedUser)
           localStorage.setItem('userData', JSON.stringify(updatedUserData));
+          this.showEdit = false;
+          // window.location.reload();
+          this.reload()
         } else {
           console.error('Error al actualizar el perfil');
+          this.showEdit = false;
         }
       });
-
-    this.showEdit = false;
-    window.location.reload();
   }
 
+  reload(){
+    window.location.reload();
+  }
   showEditForm() {
     this.showEdit = !this.showEdit;
   }
@@ -100,14 +102,14 @@ export class EditprofileviewComponent {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       this.uploadProfileImage(file);
-      this.editedUser.imagen = URL.createObjectURL(file);
+      this.editedUser.image = URL.createObjectURL(file);
     }
   }
 
   uploadProfileImage(image: File) {
     this.cloudinaryService.uploadImage(image).subscribe(
       (response: any) => {
-        this.editedUser.imagen = response.url;
+        this.editedUser.image = response.url;
       },
       (error: any) => {
         console.error('Error al cargar la imagen de perfil:', error);

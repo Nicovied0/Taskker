@@ -24,7 +24,7 @@ export class UserService {
 }
 
 export interface User {
-  _id: string;
+  userIdRegister: string;
   name: string;
   image: string;
   email: string;

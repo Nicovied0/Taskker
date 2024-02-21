@@ -7,15 +7,16 @@
           <div class="card-header">Tu perfil</div>
           <div class="card-body">
             <div class="image_div">
-              <img [src]="user?.imagen" class="image_profile" />
+              <img [src]="user?.image" class="image_profile" />
             </div>
             <div class="form-group">
               <label for="name">Nombre</label>
               <input
                 type="text"
+                
                 class="form-control"
                 id="name"
-                [(ngModel)]="user.name"
+                [ngModel]="user?.name"
                 disabled
               />
             </div>
@@ -25,7 +26,7 @@
                 type="email"
                 class="form-control"
                 id="email"
-                [(ngModel)]="user.email"
+                [ngModel]="user?.email"
                 disabled
               />
             </div>
@@ -35,7 +36,7 @@
                 type="email"
                 class="form-control"
                 id="role"
-                [(ngModel)]="user.role"
+                [ngModel]="user?.role"
                 disabled
               />
             </div>
@@ -45,7 +46,7 @@
                 type="number"
                 class="form-control"
                 id="role"
-                [(ngModel)]="user.phone"
+                [ngModel]="user?.phone"
                 disabled
               />
             </div>
@@ -54,7 +55,7 @@
               <textarea
                 class="form-control"
                 id="description"
-                [(ngModel)]="user.description"
+                [ngModel]="user?.description"
                 disabled
               ></textarea>
             </div>
@@ -92,8 +93,8 @@
                   x
                 </button>
                 <img
-                  [src]="editedUser.imagen"
-                  *ngIf="editedUser.imagen"
+                  [src]="editedUser.image"
+                  *ngIf="editedUser.image"
                   class="newImage"
                 />
               </div>
@@ -116,7 +117,7 @@
                 class="form-control"
                 id="editEmail"
                 disabled
-                [(ngModel)]="editedUser.email"
+                [ngModel]="editedUser.email"
               />
             </div>
             <div class="form-group">
