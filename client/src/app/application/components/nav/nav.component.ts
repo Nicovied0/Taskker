@@ -23,7 +23,6 @@ export class NavComponent {
   getProfile() {
     this.data = this.profileService.getUserDataFromLocalStorage()
     this.role = this.data.role
-    console.log(this.data)
   }
 
   goHome() {

@@ -61,7 +61,6 @@ export class CalendarComponent implements AfterViewInit {
           const event = args.source;
           const dp = event.calendar;
           dp.events.remove(event);
-          console.log(event);
 
           this.taskService.deleteTask(event.data.id).subscribe(
             (response) => {
@@ -114,10 +113,9 @@ export class CalendarComponent implements AfterViewInit {
 
           event.data.text = modal.result.text;
           event.data.description = modal.result.description;
-          event.start = modal.result.start;
-          event.end = modal.result.end;
+          event.data.start = modal.result.start.value;
+          event.data.end = modal.result.end.value;
           event.data.backColor = this.getColorForStatus(modal.result.backColor);
-
           this.taskService.editTask(event.data.id, event.data).subscribe(
             (response) => {
               console.log('Evento editado en el servidor:', response);
@@ -199,7 +197,6 @@ export class CalendarComponent implements AfterViewInit {
           const dp = event.calendar;
 
           event.data.backColor = this.getColorForStatus(event.data.backColor);
-          console.log(event.data.backColor);
 
           this.taskService.editStatus(event.data.id, 'Alerta').subscribe(
             (response) => {
@@ -377,7 +374,6 @@ export class CalendarComponent implements AfterViewInit {
       })
     );
 
-    console.log(dp.events.list[dp.events.list.length - 1], 'asdasdas');
     const userCreator = this.authService.getUserDataFromLocalStorage().id;
     const newTask = {
       start: dp.events.list[dp.events.list.length - 1].start.value,
@@ -420,7 +416,6 @@ export class CalendarComponent implements AfterViewInit {
       },
     ];
     const data = args.e.data;
-    console.log(args);
 
     const modal = await DayPilot.Modal.form(form, data);
 
@@ -430,7 +425,7 @@ export class CalendarComponent implements AfterViewInit {
     const eventId = data.id;
     let updatedEvent = modal.result;
     updatedEvent.backColor = this.getColorForStatus(modal.result.backColor);
-
+    console.log('updatedEvent:', updatedEvent);
     this.taskService.editTask(eventId, updatedEvent).subscribe(
       (response) => {
         console.log('Evento editado con éxito:', response);
@@ -464,7 +459,6 @@ export class CalendarComponent implements AfterViewInit {
   };
 
   getStatusForColors = (status: string): string => {
-    console.log('me ejcute', status);
     switch (status) {
       case 'Completa':
         return DataService.colors.green;

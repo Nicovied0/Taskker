@@ -8,24 +8,22 @@ import { ProfileService } from 'src/app/core/services/Profile.service';
   styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent {
-  constructor(private profileService: ProfileService,private router: Router) {}
+  constructor(private profileService: ProfileService, private router: Router) {}
 
-  data: any
-  logged : boolean = false
+  data: any;
+  logged: boolean = false;
   active = false;
   enOn = false;
   esOn = true;
 
   ngOnInit() {
-    this.getProfile()
+    this.getProfile();
   }
 
-  
   getProfile() {
-    this.data = this.profileService.getUserDataFromLocalStorage()
-    console.log(this.data)
-    if(this.data.name){
-      this.logged = true
+    this.data = this.profileService.getUserDataFromLocalStorage();
+    if (this.data.name) {
+      this.logged = true;
     }
   }
   goHome() {

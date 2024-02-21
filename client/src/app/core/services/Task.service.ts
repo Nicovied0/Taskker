@@ -15,7 +15,6 @@ export class TaskService {
   getTasksByUserId(userId: string): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl + 'user/' + userId).pipe(
       map((tasks: any[]) => {
-        console.log('Tareas recibidas:', tasks);
         return tasks.map((task) => ({
           id: task._id,
           text: task.title,
@@ -30,14 +29,12 @@ export class TaskService {
   }
 
   createTask(data: any) {
-    console.log(data, 'sot data post');
     return this.http.post<any>(this.apiUrl, data);
   }
 
   editTask(eventId: string, updatedEvent: any): Observable<any> {
     const url = this.apiUrl + eventId;
     const adjustedEventData = this.adjustEventData(updatedEvent);
-    console.log('Datos a enviar al servidor:', adjustedEventData);
     return this.http.put<any>(url, adjustedEventData);
   }
 
@@ -52,13 +49,12 @@ export class TaskService {
   }
 
   private adjustEventData(eventData: any): any {
-    console.log(eventData);
     return {
       title: eventData.text,
       description: eventData.description,
       meetingUrl: eventData.meetingUrl,
-      start: eventData.start.value.toString(),
-      end: eventData.end.value.toString(),
+      start: eventData.start.value,
+      end: eventData.end.value,
       status: eventData.backColor,
       usercreator: eventData.usercreator,
     };

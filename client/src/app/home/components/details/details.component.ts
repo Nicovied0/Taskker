@@ -4,24 +4,25 @@ import { FinancePersonalService } from 'src/app/core/services/FinancePersonal.se
 @Component({
   selector: 'app-details',
   templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss']
+  styleUrls: ['./details.component.scss'],
 })
 export class DetailsComponent {
+  cards: any;
 
-  cards :any
-
-  constructor(private financePersonalService:FinancePersonalService ){}
+  constructor(private financePersonalService: FinancePersonalService) {}
 
   ngOnInit() {
     this.getData();
   }
-  
-  getData(){
-    this.financePersonalService.getData().subscribe((data) =>{
-      this.cards = data
-    },
-    (error) =>{
-      console.error("Error in get Data",error)
-    })
+
+  getData() {
+    this.financePersonalService.getData().subscribe(
+      (data) => {
+        this.cards = data;
+      },
+      (error) => {
+        console.error('Error in get Data', error);
+      }
+    );
   }
 }

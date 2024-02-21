@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener,NgModule } from '@angular/core';
 import { Router } from '@angular/router';
 import { CloudinaryService } from 'src/app/core/services/Cloudinary.service';
 import { EditProfileService } from 'src/app/core/services/EditProfile.service';
@@ -79,11 +79,9 @@ export class EditprofileviewComponent {
             this.profileService.getUserDataFromLocalStorage();
           localStorage.removeItem('userData');
           updatedUserData.image = this.editedUser.image;
-          console.log( this.editedUser)
           localStorage.setItem('userData', JSON.stringify(updatedUserData));
           this.showEdit = false;
-          // window.location.reload();
-          this.reload()
+          this.reload();
         } else {
           console.error('Error al actualizar el perfil');
           this.showEdit = false;
@@ -91,7 +89,7 @@ export class EditprofileviewComponent {
       });
   }
 
-  reload(){
+  reload() {
     window.location.reload();
   }
   showEditForm() {

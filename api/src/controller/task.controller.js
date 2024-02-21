@@ -112,7 +112,6 @@ async function updateTaskByStatus(req, res) {
 
 async function createTask(req, res) {
   try {
-    console.log("me ejecute")
     const { title, description, meetingUrl, start, end, status, usercreator } =
       req.body;
     const task = new Task({

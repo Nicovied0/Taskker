@@ -5,23 +5,22 @@ import { ProfileService } from 'src/app/core/services/Profile.service';
 @Component({
   selector: 'app-profileview',
   templateUrl: './profileview.component.html',
-  styleUrls: ['./profileview.component.scss']
+  styleUrls: ['./profileview.component.scss'],
 })
 export class ProfileviewComponent {
-
-  constructor(private profileService: ProfileService, private authService: AuthService) { }
-  data: any
-  role:any
-
+  constructor(
+    private profileService: ProfileService,
+    private authService: AuthService
+  ) {}
+  data: any;
+  role: any;
 
   ngOnInit() {
-    this.getProfile()
+    this.getProfile();
   }
 
   getProfile() {
-    this.data = this.profileService.getUserDataFromLocalStorage()
-    this.role = this.data.role
-    console.log(this.data)
+    this.data = this.profileService.getUserDataFromLocalStorage();
+    this.role = this.data.role;
   }
-
 }

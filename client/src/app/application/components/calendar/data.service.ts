@@ -62,7 +62,6 @@ export class DataService {
   }
 
   getColorForStatus = (status: string): string => {
-    console.log('me ejcute', status);
     switch (status) {
       case 'Completa':
         return DataService.colors.green;
