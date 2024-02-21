@@ -137,7 +137,10 @@ export class CalendarComponent implements AfterViewInit {
               console.log('Estado actualizado en el servidor:', response);
             },
             (error) => {
-              console.error('Error al actualizar el estado en el servidor:', error);
+              console.error(
+                'Error al actualizar el estado en el servidor:',
+                error
+              );
             }
           );
         },
@@ -155,7 +158,10 @@ export class CalendarComponent implements AfterViewInit {
               console.log('Estado actualizado en el servidor:', response);
             },
             (error) => {
-              console.error('Error al actualizar el estado en el servidor:', error);
+              console.error(
+                'Error al actualizar el estado en el servidor:',
+                error
+              );
             }
           );
         },
@@ -173,7 +179,10 @@ export class CalendarComponent implements AfterViewInit {
               console.log('Estado actualizado en el servidor:', response);
             },
             (error) => {
-              console.error('Error al actualizar el estado en el servidor:', error);
+              console.error(
+                'Error al actualizar el estado en el servidor:',
+                error
+              );
             }
           );
         },
@@ -183,17 +192,23 @@ export class CalendarComponent implements AfterViewInit {
         onClick: (args) => {
           const event = args.source;
           const dp = event.calendar;
-          event.data.backColor = DataService.colors.yellow;
 
-          dp.events.update(event);
+          event.data.backColor = this.getColorForStatus(event.data.backColor);
+          console.log(event.data.backColor);
+
           this.taskService.editStatus(event.data.id, 'Alerta').subscribe(
             (response) => {
               console.log('Estado actualizado en el servidor:', response);
             },
             (error) => {
-              console.error('Error al actualizar el estado en el servidor:', error);
+              console.error(
+                'Error al actualizar el estado en el servidor:',
+                error
+              );
             }
           );
+          event.data.backColor = DataService.colors.yellow;
+          dp.events.update(event);
         },
       },
 
@@ -210,7 +225,10 @@ export class CalendarComponent implements AfterViewInit {
               console.log('Estado actualizado en el servidor:', response);
             },
             (error) => {
-              console.error('Error al actualizar el estado en el servidor:', error);
+              console.error(
+                'Error al actualizar el estado en el servidor:',
+                error
+              );
             }
           );
         },
@@ -336,7 +354,6 @@ export class CalendarComponent implements AfterViewInit {
   }
 
   async onTimeRangeSelected(args: any) {
-
     const modal = await DayPilot.Modal.prompt(
       'Crear nuevo evento en tu agenda:',
       'Evento'
@@ -354,10 +371,16 @@ export class CalendarComponent implements AfterViewInit {
         text: modal.result,
       })
     );
-    console.log(modal,'asdasdas');
+    console.log(modal, 'asdasdas');
     console.log(dp.events.list[dp.events.list.length - 1], 'asdasdas');
-    console.log(dp.events.list[dp.events.list.length - 1].end.value, 'end value');
-    console.log(dp.events.list[dp.events.list.length - 1].start.value, 'start value');
+    console.log(
+      dp.events.list[dp.events.list.length - 1].end.value,
+      'end value'
+    );
+    console.log(
+      dp.events.list[dp.events.list.length - 1].start.value,
+      'start value'
+    );
     console.log(dp.events.list[dp.events.list.length - 1].text, 'text value');
   }
 
@@ -394,9 +417,9 @@ export class CalendarComponent implements AfterViewInit {
       return;
     }
     const eventId = data.id;
+    let updatedEvent = modal.result;
+    updatedEvent.backColor = this.getColorForStatus(modal.result.backColor);
 
-    const updatedEvent = modal.result;
-    console.log(modal.result, 'soy modal resul');
 
     this.taskService.editTask(eventId, updatedEvent).subscribe(
       (response) => {
@@ -405,7 +428,7 @@ export class CalendarComponent implements AfterViewInit {
         args.e.data.description = updatedEvent.description;
         args.e.data.start = updatedEvent.start;
         args.e.data.end = updatedEvent.end;
-        args.e.data.backColor = this.getColorForStatus(updatedEvent.backColor);
+        args.e.data.backColor = this.getStatusForColors(updatedEvent.backColor);
       },
       (error) => {
         console.error('Error al editar el evento:', error);
@@ -425,6 +448,24 @@ export class CalendarComponent implements AfterViewInit {
         return 'En proceso';
       case DataService.colors.blue:
         return 'Agendada';
+      default:
+        return '';
+    }
+  };
+
+  getStatusForColors = (status: string): string => {
+    console.log('me ejcute', status);
+    switch (status) {
+      case 'Completa':
+        return DataService.colors.green;
+      case 'Alerta':
+        return DataService.colors.yellow;
+      case 'Cancelada':
+        return DataService.colors.red;
+      case 'En proceso':
+        return DataService.colors.gray;
+      case 'Agendada':
+        return DataService.colors.blue;
       default:
         return '';
     }
