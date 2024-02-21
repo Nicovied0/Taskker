@@ -19,6 +19,7 @@ const TaskSchema = new mongoose.Schema({
   },
   status: {
     type: String,
+    default:"Agendada"
   },
   usercreator: {
     type: String,

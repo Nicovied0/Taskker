@@ -4,6 +4,7 @@ import { DayPilot } from '@daypilot/daypilot-lite-angular';
 import { HttpClient } from '@angular/common/http';
 import { TaskService } from 'src/app/core/services/Task.service';
 import { fixDateFormat } from './date-utils.ts';
+import { AuthService } from 'src/app/core/services/Auth.service';
 
 @Injectable()
 export class DataService {
@@ -15,50 +16,38 @@ export class DataService {
     blue: '#2e78d6',
   };
 
-  constructor(private http: HttpClient, private taskService: TaskService) {}
+  constructor(
+    private http: HttpClient,
+    private taskService: TaskService,
+    private authService: AuthService
+  ) {}
   tasks: any[] = [];
 
   getEvents(from: DayPilot.Date, to: DayPilot.Date): Observable<any[]> {
     return new Observable((observer) => {
-      this.taskService
-        .getTasksByUserId('65d0c9809d9da4122fc0f356')
-        .subscribe((tasks) => {
-          const events = [
-            {
-              id: 4,
-              text: 'Event 4',
-              description: 'evento4',
-              start: DayPilot.Date.today()
-                .firstDayOfWeek()
-                .addDays(3)
-                .addHours(11),
-              end: DayPilot.Date.today()
-                .firstDayOfWeek()
-                .addDays(3)
-                .addHours(15),
-              backColor: DataService.colors.red,
-              meetingUrl: 'url.com',
-            },
+      const userId = this.authService.getUserDataFromLocalStorage().id;
 
-            ...tasks.map((task) => ({
-              id: task.id,
-              text: task.text,
-              description: task.description,
-              start: new DayPilot.Date(fixDateFormat(task.start)).toString(
-                'yyyy-MM-dd HH:mm:ss'
-              ),
-              end: new DayPilot.Date(fixDateFormat(task.end)).toString(
-                'yyyy-MM-dd HH:mm:ss'
-              ),
+      this.taskService.getTasksByUserId(userId).subscribe((tasks) => {
+        const events = [
+          ...tasks.map((task) => ({
+            id: task.id,
+            text: task.text,
+            description: task.description,
+            start: new DayPilot.Date(fixDateFormat(task.start)).toString(
+              'yyyy-MM-dd HH:mm:ss'
+            ),
+            end: new DayPilot.Date(fixDateFormat(task.end)).toString(
+              'yyyy-MM-dd HH:mm:ss'
+            ),
 
-              backColor: this.getColorForStatus(task.backColor),
-              meetingUrl: task.meetingUrl,
-            })),
-          ];
+            backColor: this.getColorForStatus(task.backColor),
+            meetingUrl: task.meetingUrl,
+          })),
+        ];
 
-          observer.next(events);
-          observer.complete();
-        });
+        observer.next(events);
+        observer.complete();
+      });
     });
   }
   getColors(): any[] {

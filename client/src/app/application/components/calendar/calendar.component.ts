@@ -7,6 +7,7 @@ import {
 } from '@daypilot/daypilot-lite-angular';
 import { DataService } from './data.service';
 import { TaskService } from 'src/app/core/services/Task.service';
+import { AuthService } from 'src/app/core/services/Auth.service';
 
 @Component({
   selector: 'app-calendar',
@@ -21,7 +22,11 @@ export class CalendarComponent implements AfterViewInit {
 
   events: DayPilot.EventData[] = [];
 
-  constructor(private ds: DataService, private taskService: TaskService) {
+  constructor(
+    private ds: DataService,
+    private taskService: TaskService,
+    private authService: AuthService
+  ) {
     this.viewWeek();
   }
   tasks: any[] | undefined;
@@ -371,23 +376,29 @@ export class CalendarComponent implements AfterViewInit {
         text: modal.result,
       })
     );
-    console.log(modal, 'asdasdas');
+
     console.log(dp.events.list[dp.events.list.length - 1], 'asdasdas');
-    console.log(
-      dp.events.list[dp.events.list.length - 1].end.value,
-      'end value'
+    const userCreator = this.authService.getUserDataFromLocalStorage().id;
+    const newTask = {
+      start: dp.events.list[dp.events.list.length - 1].start.value,
+      end: dp.events.list[dp.events.list.length - 1].end.value,
+      title: dp.events.list[dp.events.list.length - 1].text,
+      usercreator: userCreator,
+    };
+    this.taskService.createTask(newTask).subscribe(
+      (response) => {
+        console.log('Task created succefull', response);
+      },
+      (error) => {
+        console.log('error', error);
+      }
     );
-    console.log(
-      dp.events.list[dp.events.list.length - 1].start.value,
-      'start value'
-    );
-    console.log(dp.events.list[dp.events.list.length - 1].text, 'text value');
   }
 
   async onEventClick(args: any) {
     const form = [
       { name: 'Titulo', id: 'text' },
-      { name: 'Descripcion', id: 'description' },
+      { name: 'Descripcion', id: 'description', type: 'textarea' },
       { name: 'Url de reunion', id: 'meetingUrl' },
       {
         name: 'Comienza',
@@ -419,7 +430,6 @@ export class CalendarComponent implements AfterViewInit {
     const eventId = data.id;
     let updatedEvent = modal.result;
     updatedEvent.backColor = this.getColorForStatus(modal.result.backColor);
-
 
     this.taskService.editTask(eventId, updatedEvent).subscribe(
       (response) => {

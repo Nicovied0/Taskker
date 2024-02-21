@@ -66,7 +66,7 @@ export class AuthService {
     );
   }
 
-  private getUserDataFromLocalStorage(): any | null {
+   getUserDataFromLocalStorage(): any | null {
     const userData = localStorage.getItem('userData');
     return userData ? JSON.parse(userData) : null;
   }

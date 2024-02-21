@@ -40,14 +40,27 @@ async function getUserTasks(req, res) {
   }
 }
 
-
 async function deleteTaskById(req, res) {
   try {
-    const task = await Task.findById(req.params.id);
+    const taskId = req.params.id;
+
+    const task = await Task.findById(taskId);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
+
     await task.deleteOne();
+
+    const userId = task.usercreator;
+
+    const user = await User.findOne({ userIdRegister: userId });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    user.tasks = user.tasks.filter(
+      (taskId) => taskId.toString() !== task._id.toString()
+    );
+    await user.save();
     return res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
     console.error("Error deleting task:", error.message);
@@ -84,18 +97,22 @@ async function updateTaskByStatus(req, res) {
   try {
     const id = req.params.id;
     const newStatus = req.body.status;
-    const updatedDocument = await Task.findByIdAndUpdate(id, { status: newStatus }, { new: true });
+    const updatedDocument = await Task.findByIdAndUpdate(
+      id,
+      { status: newStatus },
+      { new: true }
+    );
 
-    res.json(updatedDocument); 
+    res.json(updatedDocument);
   } catch (error) {
-    console.error('Error al actualizar el estado:', error);
-    res.status(500).json({ message: 'Error interno del servidor' });
+    console.error("Error al actualizar el estado:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
   }
 }
 
-
 async function createTask(req, res) {
   try {
+    console.log("me ejecute")
     const { title, description, meetingUrl, start, end, status, usercreator } =
       req.body;
     const task = new Task({
@@ -107,17 +124,17 @@ async function createTask(req, res) {
       status,
       usercreator,
     });
-    const newTask = await task.save();
 
     const userId = usercreator;
-    const user = await User.findById(userId);
+    const user = await User.findOne({ userIdRegister: userId });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    const newTask = await task.save();
 
     user.tasks = user.tasks || [];
-    user.tasks.push(newTask._id);
+    user.tasks.push(newTask.id);
     await user.save();
 
     res.status(201).json(newTask);

@@ -1,5 +1,5 @@
 const axios = require("axios");
-const genereteProfile = require("../middlewares/genereteProfile");
+const generateProfile = require("../middlewares/generateProfile");
 
 async function registerUser(req, res) {
   try {
@@ -20,7 +20,7 @@ async function registerUser(req, res) {
       }
     );
 
-    await genereteProfile(req, res);
+    await generateProfile(req, res);
 
     return res.status(response.status).json(response.data);
   } catch (error) {
@@ -44,7 +44,9 @@ async function loginUser(req, res) {
         password,
       }
     );
-    return res.status(response.status).json(response.data);
+    generateProfile(req, res, () => {
+      return res.status(response.status).json(response.data);
+    });
   } catch (error) {
     console.error("Error login user:", error.message);
     return res.status(500).json({ error: "Error login user" });

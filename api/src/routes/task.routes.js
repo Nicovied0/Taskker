@@ -16,7 +16,6 @@ router.get("/user/:id", getUserTasks);
 router.get("/:id", getTaskById);
 router.put("/:id", updateTaskById);
 router.put("/status/:id", updateTaskByStatus);
-
 router.post("/", createTask);
 router.delete("/:id", deleteTaskById);
 
