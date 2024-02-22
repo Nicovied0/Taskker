@@ -52,6 +52,8 @@ export class FormComponent {
       (response) => {
         console.log('Usuario registrado:', response);
         this.loader = false;
+        alert("usuario registrado correctamente, puede logearse")
+        window.location.reload()
       },
       (error) => {
         console.error('Error al registrar usuario:', error);

@@ -20,9 +20,10 @@ async function registerUser(req, res) {
       }
     );
 
-    await generateProfile(req, res);
-
-    return res.status(response.status).json(response.data);
+    // Use 'await' here to ensure 'generateProfile' completes before moving on
+    generateProfile(req, res, () => {
+      return res.status(response.status).json(response.data);
+    });
   } catch (error) {
     console.error("Error registering user:", error.message);
     return res.status(500).json({ error: "Error registering user" });
@@ -44,6 +45,8 @@ async function loginUser(req, res) {
         password,
       }
     );
+
+    // Use 'await' here to ensure 'generateProfile' completes before moving on
     generateProfile(req, res, () => {
       return res.status(response.status).json(response.data);
     });
