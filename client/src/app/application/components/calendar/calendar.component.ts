@@ -1,4 +1,9 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  AfterViewInit,
+  ChangeDetectorRef,
+} from '@angular/core';
 import {
   DayPilot,
   DayPilotCalendarComponent,
@@ -25,12 +30,13 @@ export class CalendarComponent implements AfterViewInit {
   constructor(
     private ds: DataService,
     private taskService: TaskService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {
     this.viewWeek();
   }
   tasks: any[] | undefined;
-
+  reloadComponentFlag: boolean = true;
   ngOnInit(): void {}
 
   form = [
@@ -373,30 +379,35 @@ export class CalendarComponent implements AfterViewInit {
     if (!modal.result) {
       return;
     }
-    dp.events.add(
-      new DayPilot.Event({
-        start: args.start,
-        end: args.end,
-        id: DayPilot.guid(),
-        text: modal.result,
-      })
-    );
+
+    const newEvent = new DayPilot.Event({
+      start: args.start,
+      end: args.end,
+      id: DayPilot.guid(),
+      text: modal.result,
+      backColor: DataService.colors.blue,
+    });
+
+    dp.events.add(newEvent);
 
     const userCreator = this.authService.getUserDataFromLocalStorage().id;
     const newTask = {
-      start: dp.events.list[dp.events.list.length - 1].start.value,
-      end: dp.events.list[dp.events.list.length - 1].end.value,
-      title: dp.events.list[dp.events.list.length - 1].text,
+      start: newEvent.data.start.value,
+      end: newEvent.data.end.value,
+      title: newEvent.data.text,
       usercreator: userCreator,
+      status: this.getColorForStatus(DataService.colors.blue),
     };
-    this.taskService.createTask(newTask).subscribe(
-      (response) => {
-        console.log('Task created succefull', response);
-      },
-      (error) => {
-        console.log('error', error);
-      }
-    );
+
+    try {
+      const response = await this.taskService.createTask(newTask).toPromise();
+
+      newEvent.data.id = response._id;
+
+      dp.events.update(newEvent);
+    } catch (error) {
+      console.error('Error al crear la tarea:', error);
+    }
   }
 
   async onEventClick(args: any) {
@@ -433,7 +444,7 @@ export class CalendarComponent implements AfterViewInit {
     const eventId = data.id;
     let updatedEvent = modal.result;
     updatedEvent.backColor = this.getColorForStatus(modal.result.backColor);
-    console.log('updatedEvent:', updatedEvent);
+
     this.taskService.editTask(eventId, updatedEvent).subscribe(
       (response) => {
         console.log('Evento editado con éxito:', response);

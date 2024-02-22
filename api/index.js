@@ -13,6 +13,20 @@ app.use(cors());
 
 app.use("/", routes);
 
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = ['http://localhost:4200', 'https://taskker.vercel.app'];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
+app.use(cors(corsOptions));
+
 async function startServer() {
   try {
     await dbConnect();
